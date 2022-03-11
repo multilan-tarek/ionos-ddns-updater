@@ -1,0 +1,17 @@
+# Example docker-compose.yml
+version: '3.6'
+services: 
+  ionos-ddns:
+    container_name: ionos-ddns
+    build:
+      context: /docker/data/ionos
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - CHECK_INTERVAL=200
+      - HOSTNAMES=domain1.de, domain2.de, domain3.de
+      - PREFIX=<your-api-prefix>
+      - KEY=<your-api-key>
+      - DESCRIPTION=DDNS Updater
+      - API_URL=https://api.hosting.ionos.com/dns/v1/dyndns
+      - PUBLIC_IP_URL=https://ident.me
