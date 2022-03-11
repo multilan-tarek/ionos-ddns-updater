@@ -1,7 +1,7 @@
 # ionos-ddns-docker
 1&amp;1 Ionos DDNS Client with Docker Container Buildfile
 
-Example docker-compose:
+**Example docker-compose:**
 
 ```
 version: '3.6'
@@ -24,7 +24,7 @@ services:
 
 You may need to change the build context directory! The build folder should contain the *ionos.py* and the *Dockerfile*.
 
-Environment Variables:
+**Environment Variables:**
 
 `CHECK_INTERVAL` - Defines update check interval in seconds. Default is *180*<br>
 
