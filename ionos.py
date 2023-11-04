@@ -20,6 +20,7 @@ key = get_env("KEY", "")
 description = get_env("DESCRIPTION", "DDNS Update")
 api_url = get_env("API_URL", "https://api.hosting.ionos.com/dns/v1/dyndns")
 public_ip_url = get_env("PUBLIC_IP_URL", "https://ident.me")
+dns_servers = ['1.1.1.1', '8.8.8.8']
 
 
 def get_update_url():
@@ -61,7 +62,7 @@ while True:
 
         for hostname in hostnames:
             res = resolver.Resolver()
-            res.nameservers = ['1.1.1.1', '8.8.8.8']
+            res.nameservers = dns_servers
             answers = res.resolve(hostname)
             for rdata in answers:
                 ip_address = rdata.address
