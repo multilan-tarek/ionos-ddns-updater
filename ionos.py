@@ -24,7 +24,7 @@ public_ip_url = get_env("PUBLIC_IP_URL", "https://ident.me")
 dns_servers = ['1.1.1.1', '8.8.8.8']
 
 logger = logging.getLogger("IONOS-DDNS")
-logging.basicConfig(filename=os.path.join(os.path.abspath(__file__), "ionos.log"), encoding='utf-8', level=logging.INFO)
+logging.basicConfig(filename=os.path.join(os.path.dirname(os.path.abspath(__file__)), "ionos.log"), encoding='utf-8', level=logging.INFO)
 
 
 def get_update_url():
