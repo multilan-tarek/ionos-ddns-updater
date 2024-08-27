@@ -61,17 +61,20 @@ while True:
         print("Public IP: %s" % public_ip)
 
         for hostname in hostnames:
-            res = resolver.Resolver()
-            res.nameservers = dns_servers
-            answers = res.resolve(hostname)
-            for rdata in answers:
-                ip_address = rdata.address
+            try:
+                res = resolver.Resolver()
+                res.nameservers = dns_servers
+                answers = res.resolve(hostname)
+                for rdata in answers:
+                    ip_address = rdata.address
 
-                if str(ip_address) == str(public_ip):
-                    print("%s IP (%s) is same as public IP" % (hostname, ip_address))
-                else:
-                    print("%s IP (%s) is not the same as public IP" % (hostname, ip_address))
-                    needs_update = True
+                    if str(ip_address) == str(public_ip):
+                        print("%s IP (%s) is same as public IP" % (hostname, ip_address))
+                    else:
+                        print("%s IP (%s) is not the same as public IP" % (hostname, ip_address))
+                        needs_update = True
+            except dns.resolver.NXDOMAIN:
+                print("%s: Not found")
 
         if needs_update:
             print("Updating IPs...")
