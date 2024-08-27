@@ -4,6 +4,7 @@ import urllib.request
 from urllib.error import HTTPError, URLError
 import json
 from dns import resolver
+import logging
 
 
 def get_env(key_, default):
@@ -41,24 +42,25 @@ def get_update_url():
         return response_json["updateUrl"]
     except HTTPError as error:
         if error.code == 429:
-            print("API returned: 429 Too many requests, retrying in 10 minutes...")
+            logger.error("API returned: 429 Too many requests, retrying in 10 minutes...")
             time.sleep(600)
         else:
-            print("API returned: Unknown error  (%s), retrying in 60 seconds..." % error.code)
+            logger.error("API returned: Unknown error  (%s), retrying in 60 seconds..." % error.code)
             time.sleep(60)
         return get_update_url()
     except URLError as error:
-        print("Error: %s" % error)
+        logger.error("Error: %s" % error)
 
 
 update_url = get_update_url()
+logger = logging.getLogger("IONOS-DDNS")
 
 while True:
     needs_update = False
     try:
         public_ip = urllib.request.urlopen(public_ip_url).read().decode("utf8")
-        print("Checking if update is needed...")
-        print("Public IP: %s" % public_ip)
+        logger.info("Checking if update is needed...")
+        logger.info("Public IP: %s" % public_ip)
 
         for hostname in hostnames:
             try:
@@ -69,30 +71,32 @@ while True:
                     ip_address = rdata.address
 
                     if str(ip_address) == str(public_ip):
-                        print("%s IP (%s) is same as public IP" % (hostname, ip_address))
+                        logger.info("%s IP (%s) is same as public IP" % (hostname, ip_address))
                     else:
-                        print("%s IP (%s) is not the same as public IP" % (hostname, ip_address))
+                        logger.info("%s IP (%s) is not the same as public IP" % (hostname, ip_address))
                         needs_update = True
+
             except resolver.NXDOMAIN:
-                print("%s: Not found" % hostname)
+                hostnames.remove(hostname)
+                logger.error("%s: Not found" % hostname)
 
         if needs_update:
-            print("Updating IPs...")
+            logger.info("Updating IPs...")
             try:
                 update_request = urllib.request.urlopen(update_url)
-                print("Update successful (New IP: %s)" % public_ip)
+                logger.info("Update successful (New IP: %s)" % public_ip)
             except HTTPError as update_error:
                 if update_error.code == 429:
-                    print("API returned: 429 Too many requests")
+                    logger.error("API returned: 429 Too many requests")
                 else:
-                    print("API returned: Unknown error  (%s)" % update_error.code)
+                    logger.error("API returned: Unknown error  (%s)" % update_error.code)
                     time.sleep(60)
             except URLError as update_error:
-                print("Error: %s" % update_error)
+                logger.error("Error: %s" % update_error)
 
     except HTTPError as public_ip_error:
-        print("Public IP API: Unknown error" % public_ip_error.code)
+        logger.error("Public IP API: Unknown error" % public_ip_error.code)
     except URLError as public_ip_error:
-        print("Error: %s" % public_ip_error)
+        logger.error("Error: %s" % public_ip_error)
 
     time.sleep(check_interval)
