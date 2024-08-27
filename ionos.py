@@ -74,7 +74,7 @@ while True:
                         print("%s IP (%s) is not the same as public IP" % (hostname, ip_address))
                         needs_update = True
             except resolver.NXDOMAIN:
-                print("%s: Not found")
+                print("%s: Not found" % hostname)
 
         if needs_update:
             print("Updating IPs...")
