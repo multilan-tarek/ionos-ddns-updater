@@ -23,6 +23,8 @@ api_url = get_env("API_URL", "https://api.hosting.ionos.com/dns/v1/dyndns")
 public_ip_url = get_env("PUBLIC_IP_URL", "https://ident.me")
 dns_servers = ['1.1.1.1', '8.8.8.8']
 
+logger = logging.getLogger("IONOS-DDNS")
+
 
 def get_update_url():
     json_body = json.dumps({
@@ -53,7 +55,6 @@ def get_update_url():
 
 
 update_url = get_update_url()
-logger = logging.getLogger("IONOS-DDNS")
 
 while True:
     needs_update = False
