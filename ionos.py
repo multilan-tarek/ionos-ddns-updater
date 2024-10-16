@@ -80,7 +80,7 @@ while True:
                     ip_address = rdata.address
 
                     if str(ip_address) != str(public_ip):
-                        update_hostnames += hostname
+                        update_hostnames.append(hostname)
 
             except resolver.NXDOMAIN:
                 hostnames.remove(hostname)
