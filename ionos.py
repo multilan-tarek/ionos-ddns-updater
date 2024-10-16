@@ -24,8 +24,6 @@ public_ip_url = get_env("PUBLIC_IP_URL", "https://ident.me")
 dns_servers = ['1.1.1.1', '8.8.8.8']
 
 logger = logging.getLogger("IONOS-DDNS")
-logging.basicConfig(filename=os.path.join(os.path.dirname(os.path.abspath(__file__)), "ionos.log"), encoding='utf-8', level=logging.INFO)
-
 
 def get_update_url():
     json_body = json.dumps({
@@ -43,6 +41,7 @@ def get_update_url():
         response = response.read().decode(response.headers.get_content_charset())
         response_json = json.loads(response)
         return response_json["updateUrl"]
+
     except HTTPError as error:
         if error.code == 429:
             logger.error("API returned: 429 Too many requests, retrying in 10 minutes...")
@@ -54,7 +53,7 @@ def get_update_url():
     except URLError as error:
         logger.error("Error: %s" % error)
 
-
+logger.info("Getting update URL...")
 update_url = get_update_url()
 
 while True:
