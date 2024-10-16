@@ -42,7 +42,6 @@ def get_update_url():
         response = response.read().decode("utf-8")
         response_json = json.loads(response)
         sys.stdout.write("Done\n\n")
-        sys.stdout.write(f"Update URL: {response_json['updateUrl']}\n")
         return response_json["updateUrl"]
 
     except HTTPError as error:
