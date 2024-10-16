@@ -41,22 +41,22 @@ def get_update_url():
         response = urllib.request.urlopen(request, json_body_bytes)
         response = response.read().decode("utf-8")
         response_json = json.loads(response)
-        sys.stdout.write("Done\n\n")
+        sys.stdout.write("Done\n")
         return response_json["updateUrl"]
 
     except HTTPError as error:
         sys.stdout.write("Failed\n")
         if error.code == 429:
-            sys.stderr.write("API returned: 429 Too many requests, retrying in 10 minutes...\n\n")
+            sys.stderr.write("API returned: 429 Too many requests, retrying in 10 minutes...\n")
             time.sleep(600)
         else:
-            sys.stderr.write(f"API returned: Unknown error  ({error.code}), retrying in 60 seconds...\n\n")
+            sys.stderr.write(f"API returned: Unknown error  ({error.code}), retrying in 60 seconds...\n")
             time.sleep(60)
         return get_update_url()
 
     except URLError as error:
         sys.stdout.write("Failed\n")
-        sys.stderr.write(f"Error: {error}\n\n")
+        sys.stderr.write(f"Error: {error}\n")
 
 
 update_url = get_update_url()
@@ -66,7 +66,7 @@ while True:
         sys.stdout.write("Getting Public IP... ")
         public_ip = urllib.request.urlopen(public_ip_url).read().decode("utf-8")
         sys.stdout.write("Done\n")
-        sys.stdout.write(f"Public IP: {public_ip}\n\n")
+        sys.stdout.write(f"Public IP: {public_ip}\n")
         sys.stdout.write("Checking Hostname IPs... ")
 
         nx_hostnames = []
@@ -86,7 +86,7 @@ while True:
                 hostnames.remove(hostname)
                 nx_hostnames.append(hostname)
 
-        sys.stdout.write("Done\n\n")
+        sys.stdout.write("Done\n")
 
         if nx_hostnames:
             sys.stderr.write("Following Hostnames returned NXDOMAIN:\n")
@@ -98,24 +98,22 @@ while True:
             sys.stderr.write("Following Hostnames need to be updated:\n")
             for hostname in update_hostnames:
                 sys.stderr.write(f"- {hostname}\n")
-            sys.stdout.write("\n")
 
             sys.stdout.write("Updating Hostnames... \n")
             try:
                 update_request = urllib.request.urlopen(update_url)
-                sys.stdout.write("Done\n\n")
 
             except HTTPError as update_error:
                 sys.stdout.write("Failed\n")
                 if update_error.code == 429:
-                    sys.stderr.write("API returned: 429 Too many requests\n\n")
+                    sys.stderr.write("API returned: 429 Too many requests\n")
                 else:
-                    sys.stderr.write(f"API returned: Unknown error  ({update_error.code})\n\n")
+                    sys.stderr.write(f"API returned: Unknown error  ({update_error.code})\n")
                     time.sleep(60)
 
             except URLError as update_error:
                 sys.stdout.write("Failed\n")
-                sys.stderr.write(f"Error: {update_error}\n\n")
+                sys.stderr.write(f"Error: {update_error}\n")
 
         else:
             sys.stdout.write("All Hostname IPs are up to date\n")
