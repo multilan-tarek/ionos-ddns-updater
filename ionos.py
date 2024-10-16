@@ -25,6 +25,7 @@ dns_servers = ['1.1.1.1', '8.8.8.8']
 
 logger = logging.getLogger("IONOS-DDNS")
 
+
 def get_update_url():
     json_body = json.dumps({
         "domains": hostnames,
@@ -38,7 +39,7 @@ def get_update_url():
     request.add_header("X-API-Key", "%s.%s" % (prefix, key))
     try:
         response = urllib.request.urlopen(request, json_body_bytes)
-        response = response.read().decode(response.headers.get_content_charset())
+        response = response.read().decode("utf-8")
         response_json = json.loads(response)
         return response_json["updateUrl"]
 
@@ -53,13 +54,14 @@ def get_update_url():
     except URLError as error:
         logger.error("Error: %s" % error)
 
+
 logger.info("Getting update URL...")
 update_url = get_update_url()
 
 while True:
     needs_update = False
     try:
-        public_ip = urllib.request.urlopen(public_ip_url).read().decode("utf8")
+        public_ip = urllib.request.urlopen(public_ip_url).read().decode("utf-8")
         logger.info("Checking if update is needed...")
         logger.info("Public IP: %s" % public_ip)
 
