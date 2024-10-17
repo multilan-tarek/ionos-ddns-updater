@@ -95,13 +95,14 @@ while True:
             sys.stdout.write("\n")
 
         if update_hostnames:
-            sys.stderr.write("Following Hostnames need to be updated:\n")
+            sys.stdout.write("Following Hostnames need to be updated:\n")
             for hostname in update_hostnames:
-                sys.stderr.write(f"- {hostname}\n")
+                sys.stdout.write(f"- {hostname}\n")
 
             sys.stdout.write("Updating Hostnames... \n")
             try:
                 update_request = urllib.request.urlopen(update_url)
+                sys.stdout.write("Done\n")
 
             except HTTPError as update_error:
                 sys.stdout.write("Failed\n")
